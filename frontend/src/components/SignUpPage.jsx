@@ -1,82 +1,168 @@
+// FILE: frontend/src/components/SignUpPage.jsx
+import React, { useState, useContext } from 'react'
+import { motion } from "framer-motion"
+import axios from 'axios'
+import { UserDataContext } from '../context/UserContext'
+import { useNavigate } from 'react-router-dom'
 
-import {motion}  from "framer-motion";
-const Signup=()=>{
-return (
-<div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-500 to-blue-700 p-6">
-<motion.div
-initial={{ opacity: 0, y: 20 }}
-animate={{ opacity: 1, y: 0 }}
-transition={{ duration: 0.6 }}
-className="bg-white w-full max-w-md rounded-2xl shadow-xl p-8"
->
-<h2 className="text-2xl font-bold text-center text-gray-800">Join CivicConnect</h2>
-<p className="text-center text-gray-500 mt-2">
-Create your account to start reporting and connecting.
-</p>
+const Signup = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  
+  const { login } = useContext(UserDataContext)
+  const navigate = useNavigate()
 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
+  }
 
-<form className="mt-6 space-y-4">
-<div>
-<label className="block text-sm font-medium text-gray-600">First Name</label>
-<input
-type="text"
-placeholder="Enter your name"
-className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-/>
-<label className="block text-sm font-medium text-gray-600">Last Name</label>
-<input
-type="text"
-placeholder="Enter your name"
-className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-/>
-</div>
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
 
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match')
+      setLoading(false)
+      return
+    }
 
-<div>
-<label className="block text-sm font-medium text-gray-600">Email</label>
-<input
-type="email"
-placeholder="Enter your email"
-className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-/>
-</div>
+    try {
+      // Note: You'll need to update your backend to accept firstName and lastName
+      // instead of fullname object
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, {
+        fullname: {
+          firstname: formData.firstName,
+          lastname: formData.lastName
+        },
+        email: formData.email,
+        password: formData.password
+      })
+      
+      if (response.status === 201) {
+        const { token, user } = response.data
+        login(token, user)
+        navigate('/dashboard')
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-500 to-blue-700 p-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="bg-white w-full max-w-md rounded-2xl shadow-xl p-8"
+      >
+        <h2 className="text-2xl font-bold text-center text-gray-800">Join CivicConnect</h2>
+        <p className="text-center text-gray-500 mt-2">
+          Create your account to start reporting and connecting.
+        </p>
 
-<div>
-<label className="block text-sm font-medium text-gray-600">Password</label>
-<input
-type="password"
-placeholder="Enter your password"
-className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-/>
-</div>
+        {error && (
+          <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
 
+        <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+          <div>
+            <label className="block text-sm font-medium text-gray-600">First Name</label>
+            <input
+              type="text"
+              name="firstName"
+              placeholder="Enter your first name"
+              value={formData.firstName}
+              onChange={handleChange}
+              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              required
+            />
+          </div>
 
-<div>
-<label className="block text-sm font-medium text-gray-600">Confirm Password</label>
-<input
-type="password"
-placeholder="Re-enter your password"
-className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-/>
-</div>
+          <div>
+            <label className="block text-sm font-medium text-gray-600">Last Name</label>
+            <input
+              type="text"
+              name="lastName"
+              placeholder="Enter your last name"
+              value={formData.lastName}
+              onChange={handleChange}
+              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
 
+          <div>
+            <label className="block text-sm font-medium text-gray-600">Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              value={formData.email}
+              onChange={handleChange}
+              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              required
+            />
+          </div>
 
-<button
-type="submit"
-className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg shadow hover:bg-blue-700 transition"
->
-Register
-</button>
-</form>
+          <div>
+            <label className="block text-sm font-medium text-gray-600">Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleChange}
+              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              required
+              minLength={8}
+            />
+          </div>
 
+          <div>
+            <label className="block text-sm font-medium text-gray-600">Confirm Password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Re-enter your password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              required
+              minLength={8}
+            />
+          </div>
 
-<p className="mt-6 text-center text-sm text-gray-600">
-Already have an account? <a href="/login" className="text-blue-600 font-medium hover:underline">Login</a>
-</p>
-</motion.div>
-</div>
-);
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg shadow hover:bg-blue-700 transition disabled:opacity-50"
+          >
+            {loading ? 'Creating account...' : 'Register'}
+          </button>
+        </form>
+
+        <p className="mt-6 text-center text-sm text-gray-600">
+          Already have an account? <a href="/login" className="text-blue-600 font-medium hover:underline">Login</a>
+        </p>
+      </motion.div>
+    </div>
+  )
 }
 
 export default Signup

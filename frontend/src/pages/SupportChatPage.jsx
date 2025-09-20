@@ -258,6 +258,7 @@ const SupportChatPage = () => {
     //     </div>
     //   </div>
     // </div>
+    <div>Comming soon ...</div>
   );
 };
 

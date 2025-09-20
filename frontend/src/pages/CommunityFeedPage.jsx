@@ -247,6 +247,7 @@ const CommunityFeedPage = () => {
     //     </div>
     //   </div>
     // </div>
+    <div>comming soon ...</div>
   );
 };
 

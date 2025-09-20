@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, MapPin, MessageCircle, Users, User, Settings, Info } from 'lucide-react';
+// FILE: frontend/src/components/Layout.jsx
+import React, { useState, useContext } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, MapPin, MessageCircle, Users, User, Settings, Info, LogOut } from 'lucide-react';
+import { UserDataContext } from '../context/UserContext';
 
 const Layout = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useContext(UserDataContext);
 
   const navigation = [
     { name: 'Home', href: '/', icon: MapPin },
@@ -15,6 +19,11 @@ const Layout = ({ children }) => {
   ];
 
   const isActive = (path) => location.pathname === path;
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -55,6 +64,37 @@ const Layout = ({ children }) => {
               >
                 Report Issue
               </Link>
+              
+              {isAuthenticated ? (
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm text-gray-700">
+                    Welcome, {user?.fullname?.firstname || 'User'}
+                  </span>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center space-x-1 text-gray-700 hover:text-red-600 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <Link
+                    to="/login"
+                    className="text-gray-700 hover:text-blue-600 transition-colors"
+                  >
+                    Login
+                  </Link>
+                  <span className="text-gray-400">|</span>
+                  <Link
+                    to="/signup"
+                    className="text-gray-700 hover:text-blue-600 transition-colors"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
             </div>
 
             {/* Mobile menu button */}
@@ -98,6 +138,41 @@ const Layout = ({ children }) => {
               >
                 Report Issue
               </Link>
+              
+              {isAuthenticated ? (
+                <div className="px-3 py-2">
+                  <div className="text-sm text-gray-700 mb-2">
+                    Welcome, {user?.fullname?.firstname || 'User'}
+                  </div>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center space-x-2 text-red-600 text-sm"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="px-3 py-2 space-y-2">
+                  <Link
+                    to="/login"
+                    className="block text-gray-700 hover:text-blue-600 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="block text-gray-700 hover:text-blue-600 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         )}
