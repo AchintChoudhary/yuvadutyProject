@@ -113,140 +113,140 @@ const CommunityFeedPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Community Feed</h1>
-          <p className="text-gray-600">Stay updated on local issues and community activities</p>
-        </div>
+    // <div className="min-h-screen bg-gray-50">
+    //   <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    //     {/* Header */}
+    //     <div className="mb-8">
+    //       <h1 className="text-3xl font-bold text-gray-900 mb-2">Community Feed</h1>
+    //       <p className="text-gray-600">Stay updated on local issues and community activities</p>
+    //     </div>
 
-        {/* Filters */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-            <div className="flex items-center space-x-4">
-              <Filter className="w-5 h-5 text-gray-500" />
-              <div className="flex space-x-2">
-                {['all', 'pending', 'in_progress', 'resolved'].map(filterOption => (
-                  <button
-                    key={filterOption}
-                    onClick={() => setFilter(filterOption)}
-                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                      filter === filterOption
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {filterOption.charAt(0).toUpperCase() + filterOption.slice(1).replace('_', ' ')}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="latest">Latest</option>
-              <option value="popular">Most Popular</option>
-              <option value="upvotes">Most Upvoted</option>
-            </select>
-          </div>
-        </div>
+    //     {/* Filters */}
+    //     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+    //       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+    //         <div className="flex items-center space-x-4">
+    //           <Filter className="w-5 h-5 text-gray-500" />
+    //           <div className="flex space-x-2">
+    //             {['all', 'pending', 'in_progress', 'resolved'].map(filterOption => (
+    //               <button
+    //                 key={filterOption}
+    //                 onClick={() => setFilter(filterOption)}
+    //                 className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+    //                   filter === filterOption
+    //                     ? 'bg-blue-600 text-white'
+    //                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+    //                 }`}
+    //               >
+    //                 {filterOption.charAt(0).toUpperCase() + filterOption.slice(1).replace('_', ' ')}
+    //               </button>
+    //             ))}
+    //           </div>
+    //         </div>
+    //         <select
+    //           value={sortBy}
+    //           onChange={(e) => setSortBy(e.target.value)}
+    //           className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+    //         >
+    //           <option value="latest">Latest</option>
+    //           <option value="popular">Most Popular</option>
+    //           <option value="upvotes">Most Upvoted</option>
+    //         </select>
+    //       </div>
+    //     </div>
 
-        {/* Posts */}
-        <div className="space-y-6">
-          {filteredPosts.map(post => {
-            const StatusIcon = getStatusIcon(post.status);
-            return (
-              <div key={post.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-                <div className="p-6">
-                  {/* Header */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <img
-                        src={post.author.avatar}
-                        alt={post.author.name}
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
-                      <div>
-                        <div className="flex items-center space-x-2">
-                          <span className="font-medium text-gray-900">{post.author.name}</span>
-                          {post.author.verified && (
-                            <Badge className="w-4 h-4 text-blue-600" />
-                          )}
-                        </div>
-                        <div className="flex items-center space-x-2 text-sm text-gray-500">
-                          <MapPin className="w-3 h-3" />
-                          <span>{post.location}</span>
-                          <span>•</span>
-                          <span>{post.createdAt}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(post.status)}`}>
-                        <StatusIcon className="w-3 h-3 inline mr-1" />
-                        {post.status.replace('_', ' ')}
-                      </span>
-                      <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs font-medium">
-                        {post.category}
-                      </span>
-                    </div>
-                  </div>
+    //     {/* Posts */}
+    //     <div className="space-y-6">
+    //       {filteredPosts.map(post => {
+    //         const StatusIcon = getStatusIcon(post.status);
+    //         return (
+    //           <div key={post.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+    //             <div className="p-6">
+    //               {/* Header */}
+    //               <div className="flex items-start justify-between mb-4">
+    //                 <div className="flex items-center space-x-3">
+    //                   <img
+    //                     src={post.author.avatar}
+    //                     alt={post.author.name}
+    //                     className="w-10 h-10 rounded-full object-cover"
+    //                   />
+    //                   <div>
+    //                     <div className="flex items-center space-x-2">
+    //                       <span className="font-medium text-gray-900">{post.author.name}</span>
+    //                       {post.author.verified && (
+    //                         <Badge className="w-4 h-4 text-blue-600" />
+    //                       )}
+    //                     </div>
+    //                     <div className="flex items-center space-x-2 text-sm text-gray-500">
+    //                       <MapPin className="w-3 h-3" />
+    //                       <span>{post.location}</span>
+    //                       <span>•</span>
+    //                       <span>{post.createdAt}</span>
+    //                     </div>
+    //                   </div>
+    //                 </div>
+    //                 <div className="flex items-center space-x-2">
+    //                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(post.status)}`}>
+    //                     <StatusIcon className="w-3 h-3 inline mr-1" />
+    //                     {post.status.replace('_', ' ')}
+    //                   </span>
+    //                   <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs font-medium">
+    //                     {post.category}
+    //                   </span>
+    //                 </div>
+    //               </div>
 
-                  {/* Content */}
-                  <div className="mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{post.title}</h3>
-                    <p className="text-gray-700">{post.description}</p>
-                  </div>
+    //               {/* Content */}
+    //               <div className="mb-4">
+    //                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{post.title}</h3>
+    //                 <p className="text-gray-700">{post.description}</p>
+    //               </div>
 
-                  {/* Media */}
-                  {post.media && post.media.length > 0 && (
-                    <div className="mb-4">
-                      <img
-                        src={post.media[0]}
-                        alt="Post media"
-                        className="w-full h-64 object-cover rounded-lg"
-                      />
-                    </div>
-                  )}
+    //               {/* Media */}
+    //               {post.media && post.media.length > 0 && (
+    //                 <div className="mb-4">
+    //                   <img
+    //                     src={post.media[0]}
+    //                     alt="Post media"
+    //                     className="w-full h-64 object-cover rounded-lg"
+    //                   />
+    //                 </div>
+    //               )}
 
-                  {/* Actions */}
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                    <div className="flex items-center space-x-6">
-                      <button className="flex items-center space-x-2 text-gray-500 hover:text-red-500 transition-colors">
-                        <Heart className="w-5 h-5" />
-                        <span className="text-sm">{post.likes}</span>
-                      </button>
-                      <button className="flex items-center space-x-2 text-gray-500 hover:text-blue-500 transition-colors">
-                        <MessageCircle className="w-5 h-5" />
-                        <span className="text-sm">{post.comments}</span>
-                      </button>
-                      <button className="flex items-center space-x-2 text-gray-500 hover:text-green-500 transition-colors">
-                        <ArrowUp className="w-5 h-5" />
-                        <span className="text-sm">{post.upvotes}</span>
-                      </button>
-                    </div>
-                    <button className="flex items-center space-x-2 text-gray-500 hover:text-blue-500 transition-colors">
-                      <Share2 className="w-5 h-5" />
-                      <span className="text-sm">Share</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+    //               {/* Actions */}
+    //               <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+    //                 <div className="flex items-center space-x-6">
+    //                   <button className="flex items-center space-x-2 text-gray-500 hover:text-red-500 transition-colors">
+    //                     <Heart className="w-5 h-5" />
+    //                     <span className="text-sm">{post.likes}</span>
+    //                   </button>
+    //                   <button className="flex items-center space-x-2 text-gray-500 hover:text-blue-500 transition-colors">
+    //                     <MessageCircle className="w-5 h-5" />
+    //                     <span className="text-sm">{post.comments}</span>
+    //                   </button>
+    //                   <button className="flex items-center space-x-2 text-gray-500 hover:text-green-500 transition-colors">
+    //                     <ArrowUp className="w-5 h-5" />
+    //                     <span className="text-sm">{post.upvotes}</span>
+    //                   </button>
+    //                 </div>
+    //                 <button className="flex items-center space-x-2 text-gray-500 hover:text-blue-500 transition-colors">
+    //                   <Share2 className="w-5 h-5" />
+    //                   <span className="text-sm">Share</span>
+    //                 </button>
+    //               </div>
+    //             </div>
+    //           </div>
+    //         );
+    //       })}
+    //     </div>
 
-        {/* Load More */}
-        <div className="text-center mt-8">
-          <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-            Load More Posts
-          </button>
-        </div>
-      </div>
-    </div>
+    //     {/* Load More */}
+    //     <div className="text-center mt-8">
+    //       <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+    //         Load More Posts
+    //       </button>
+    //     </div>
+    //   </div>
+    // </div>
   );
 };
 
