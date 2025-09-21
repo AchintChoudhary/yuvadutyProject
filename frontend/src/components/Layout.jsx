@@ -3,7 +3,7 @@ import React, { useState, useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, MapPin, MessageCircle, Users, User, Settings, Info, LogOut } from 'lucide-react';
 import { UserDataContext } from '../context/UserContext';
-
+import yuvaLogo from '../assets/yuvaLogo.png';
 const Layout = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
@@ -41,10 +41,10 @@ const Layout = ({ children }) => {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link to="/" className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-white" />
+                <div className="w-15 h-15 rounded-lg flex items-center justify-center">
+                <img src={yuvaLogo} alt="Yuva Logo" />
                 </div>
-                <span className="text-xl font-bold text-gray-900">CivicConnect</span>
+               
               </Link>
             </div>
 
@@ -58,8 +58,8 @@ const Layout = ({ children }) => {
                     to={item.href}
                     className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                       isActive(item.href)
-                        ? 'text-blue-600 bg-blue-50'
-                        : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                        ? 'text-orange-500 bg-blue-50'
+                        : 'text-gray-700 hover:text-orange-500 hover:bg-gray-50'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
