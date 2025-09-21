@@ -1,7 +1,7 @@
 // FILE: backend/middlewares/auth.middleware.js
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
-const BlacklistToken = require("../models/blacklistToken.model");
+const BlacklistToken = require("../models/blackListToken.model");
 
 module.exports.authUser = async (req, res, next) => {
   try {
