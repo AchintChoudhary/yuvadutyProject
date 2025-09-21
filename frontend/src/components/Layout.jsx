@@ -8,7 +8,7 @@ const Layout = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, isAuthenticated, logout } = useContext(UserDataContext);
+  const { user, isAuthenticated, logout, loading } = useContext(UserDataContext);
 
   const navigation = [
     { name: 'Home', href: '/', icon: MapPin },
@@ -23,7 +23,16 @@ const Layout = ({ children }) => {
   const handleLogout = () => {
     logout();
     navigate('/');
+    setIsMenuOpen(false);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -68,7 +77,7 @@ const Layout = ({ children }) => {
               {isAuthenticated ? (
                 <div className="flex items-center space-x-4">
                   <span className="text-sm text-gray-700">
-                    Welcome, {user?.fullname?.firstname || 'User'}
+                    Welcome, {user?.firstName || 'User'}
                   </span>
                   <button
                     onClick={handleLogout}
@@ -142,13 +151,10 @@ const Layout = ({ children }) => {
               {isAuthenticated ? (
                 <div className="px-3 py-2">
                   <div className="text-sm text-gray-700 mb-2">
-                    Welcome, {user?.fullname?.firstname || 'User'}
+                    Welcome, {user?.firstName || 'User'}
                   </div>
                   <button
-                    onClick={() => {
-                      handleLogout();
-                      setIsMenuOpen(false);
-                    }}
+                    onClick={handleLogout}
                     className="flex items-center space-x-2 text-red-600 text-sm"
                   >
                     <LogOut className="w-4 h-4" />

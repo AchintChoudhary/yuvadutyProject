@@ -1,11 +1,14 @@
+// FILE: frontend/src/main.jsx
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
-import LoginPage from './components/LoginPage.jsx'
-import SignupPage from './components/SignUpPage.jsx';
+import UserContext from './context/UserContext';
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-<App/>
+    <UserContext>
+      <App/>
+    </UserContext>
   </StrictMode>
 );

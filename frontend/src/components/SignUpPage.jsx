@@ -38,14 +38,17 @@ const Signup = () => {
       return
     }
 
+    // Validate password length
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters long')
+      setLoading(false)
+      return
+    }
+
     try {
-      // Note: You'll need to update your backend to accept firstName and lastName
-      // instead of fullname object
       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, {
-        fullname: {
-          firstname: formData.firstName,
-          lastname: formData.lastName
-        },
+        firstName: formData.firstName,
+        lastName: formData.lastName,
         email: formData.email,
         password: formData.password
       })
@@ -83,14 +86,14 @@ const Signup = () => {
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm font-medium text-gray-600">First Name</label>
+            <label className="block text-sm font-medium text-gray-600">First Name *</label>
             <input
               type="text"
               name="firstName"
               placeholder="Enter your first name"
               value={formData.firstName}
               onChange={handleChange}
-              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
@@ -103,46 +106,46 @@ const Signup = () => {
               placeholder="Enter your last name"
               value={formData.lastName}
               onChange={handleChange}
-              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600">Email</label>
+            <label className="block text-sm font-medium text-gray-600">Email *</label>
             <input
               type="email"
               name="email"
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
-              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600">Password</label>
+            <label className="block text-sm font-medium text-gray-600">Password *</label>
             <input
               type="password"
               name="password"
-              placeholder="Enter your password"
+              placeholder="Enter your password (min. 8 characters)"
               value={formData.password}
               onChange={handleChange}
-              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
               minLength={8}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600">Confirm Password</label>
+            <label className="block text-sm font-medium text-gray-600">Confirm Password *</label>
             <input
               type="password"
               name="confirmPassword"
               placeholder="Re-enter your password"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
               minLength={8}
             />
