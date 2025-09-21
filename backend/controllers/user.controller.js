@@ -1,7 +1,7 @@
 // FILE: backend/controllers/user.controller.js
 const User = require("../models/user.model");
 const { validationResult } = require("express-validator");
-const BlacklistToken = require('../models/blacklistToken.model');
+const BlacklistToken = require('../models/blackListToken.model');
 
 module.exports.registerUser = async (req, res, next) => {
   const error = validationResult(req);
