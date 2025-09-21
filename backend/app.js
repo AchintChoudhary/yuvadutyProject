@@ -11,7 +11,7 @@ const cookieParser = require('cookie-parser');
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: 'https://yuvaduty-project-ibuj.vercel.app/' || 'http://localhost:5173',
   credentials: true
 }));
 
