@@ -14,7 +14,7 @@ const Layout = ({ children }) => {
     { name: 'Home', href: '/', icon: MapPin },
     { name: 'Community', href: '/community', icon: Users },
     { name: 'Support', href: '/support', icon: MessageCircle },
-    { name: 'Dashboard', href: '/dashboard', icon: User },
+    { name: 'Profile', href: '/dashboard', icon: User },
     { name: 'About', href: '/about', icon: Info },
   ];
 

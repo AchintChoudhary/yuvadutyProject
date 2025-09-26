@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Share2, MapPin, Filter, ArrowUp, CheckCircle, AlertCircle, Clock, Badge } from 'lucide-react';
+import { Heart, MessageCircle, Share2, MapPin, Filter, ArrowUp, CheckCircle, AlertCircle, Clock, Badge, Menu, X } from 'lucide-react';
 
 const CommunityFeedPage = () => {
   const [filter, setFilter] = useState('all');
   const [sortBy, setSortBy] = useState('latest');
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   const posts = [
     {
@@ -113,141 +114,169 @@ const CommunityFeedPage = () => {
   });
 
   return (
-    // <div className="min-h-screen bg-gray-50">
-    //   <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    //     {/* Header */}
-    //     <div className="mb-8">
-    //       <h1 className="text-3xl font-bold text-gray-900 mb-2">Community Feed</h1>
-    //       <p className="text-gray-600">Stay updated on local issues and community activities</p>
-    //     </div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
+        {/* Header */}
+        <div className="mb-4 sm:mb-6 md:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Community Feed</h1>
+          <p className="text-sm sm:text-base text-gray-600">Stay updated on local issues and community activities</p>
+        </div>
 
-    //     {/* Filters */}
-    //     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
-    //       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-    //         <div className="flex items-center space-x-4">
-    //           <Filter className="w-5 h-5 text-gray-500" />
-    //           <div className="flex space-x-2">
-    //             {['all', 'pending', 'in_progress', 'resolved'].map(filterOption => (
-    //               <button
-    //                 key={filterOption}
-    //                 onClick={() => setFilter(filterOption)}
-    //                 className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-    //                   filter === filterOption
-    //                     ? 'bg-blue-600 text-white'
-    //                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-    //                 }`}
-    //               >
-    //                 {filterOption.charAt(0).toUpperCase() + filterOption.slice(1).replace('_', ' ')}
-    //               </button>
-    //             ))}
-    //           </div>
-    //         </div>
-    //         <select
-    //           value={sortBy}
-    //           onChange={(e) => setSortBy(e.target.value)}
-    //           className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-    //         >
-    //           <option value="latest">Latest</option>
-    //           <option value="popular">Most Popular</option>
-    //           <option value="upvotes">Most Upvoted</option>
-    //         </select>
-    //       </div>
-    //     </div>
+        {/* Mobile Filter Toggle */}
+        <div className="lg:hidden mb-4">
+          <button
+            onClick={() => setShowMobileFilters(!showMobileFilters)}
+            className="flex items-center space-x-2 bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200 w-full justify-center"
+          >
+            {showMobileFilters ? <X className="w-4 h-4" /> : <Filter className="w-4 h-4" />}
+            <span className="text-sm font-medium">Filters & Sort</span>
+          </button>
+        </div>
 
-    //     {/* Posts */}
-    //     <div className="space-y-6">
-    //       {filteredPosts.map(post => {
-    //         const StatusIcon = getStatusIcon(post.status);
-    //         return (
-    //           <div key={post.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-    //             <div className="p-6">
-    //               {/* Header */}
-    //               <div className="flex items-start justify-between mb-4">
-    //                 <div className="flex items-center space-x-3">
-    //                   <img
-    //                     src={post.author.avatar}
-    //                     alt={post.author.name}
-    //                     className="w-10 h-10 rounded-full object-cover"
-    //                   />
-    //                   <div>
-    //                     <div className="flex items-center space-x-2">
-    //                       <span className="font-medium text-gray-900">{post.author.name}</span>
-    //                       {post.author.verified && (
-    //                         <Badge className="w-4 h-4 text-blue-600" />
-    //                       )}
-    //                     </div>
-    //                     <div className="flex items-center space-x-2 text-sm text-gray-500">
-    //                       <MapPin className="w-3 h-3" />
-    //                       <span>{post.location}</span>
-    //                       <span>•</span>
-    //                       <span>{post.createdAt}</span>
-    //                     </div>
-    //                   </div>
-    //                 </div>
-    //                 <div className="flex items-center space-x-2">
-    //                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(post.status)}`}>
-    //                     <StatusIcon className="w-3 h-3 inline mr-1" />
-    //                     {post.status.replace('_', ' ')}
-    //                   </span>
-    //                   <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs font-medium">
-    //                     {post.category}
-    //                   </span>
-    //                 </div>
-    //               </div>
+        {/* Filters */}
+        <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4 mb-4 sm:mb-6 ${
+          showMobileFilters ? 'block' : 'hidden lg:block'
+        }`}>
+          <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row justify-between items-start sm:items-center">
+            <div className="w-full sm:w-auto">
+              <div className="flex items-center space-x-2 mb-2 sm:mb-0">
+                <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500" />
+                <span className="text-sm font-medium text-gray-700 sm:hidden">Filter by Status</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {['all', 'pending', 'in_progress', 'resolved'].map(filterOption => (
+                  <button
+                    key={filterOption}
+                    onClick={() => setFilter(filterOption)}
+                    className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium transition-colors ${
+                      filter === filterOption
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {filterOption.charAt(0).toUpperCase() + filterOption.slice(1).replace('_', ' ')}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="w-full sm:w-auto">
+              <label htmlFor="sort-select" className="text-sm font-medium text-gray-700 sm:hidden block mb-1">
+                Sort by
+              </label>
+              <select
+                id="sort-select"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full sm:w-auto px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="latest">Latest</option>
+                <option value="popular">Most Popular</option>
+                <option value="upvotes">Most Upvoted</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-    //               {/* Content */}
-    //               <div className="mb-4">
-    //                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{post.title}</h3>
-    //                 <p className="text-gray-700">{post.description}</p>
-    //               </div>
+        {/* Posts */}
+        <div className="space-y-4 sm:space-y-6">
+          {filteredPosts.map(post => {
+            const StatusIcon = getStatusIcon(post.status);
+            return (
+              <div key={post.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+                <div className="p-4 sm:p-6">
+                  {/* Header */}
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-3 sm:mb-4 space-y-3 sm:space-y-0">
+                    <div className="flex items-start space-x-3">
+                      <img
+                        src={post.author.avatar}
+                        alt={post.author.name}
+                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <div className="flex items-center space-x-2">
+                          <span className="font-medium text-gray-900 text-sm sm:text-base truncate">{post.author.name}</span>
+                          {post.author.verified && (
+                            <Badge className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 flex-shrink-0" />
+                          )}
+                        </div>
+                        <div className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-gray-500 flex-wrap">
+                          <MapPin className="w-3 h-3 flex-shrink-0" />
+                          <span className="truncate">{post.location}</span>
+                          <span className="hidden sm:inline">•</span>
+                          <span>{post.createdAt}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2 self-start sm:self-auto">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(post.status)}`}>
+                        <StatusIcon className="w-3 h-3 inline mr-1" />
+                        <span className="hidden xs:inline">{post.status.replace('_', ' ')}</span>
+                      </span>
+                      <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs font-medium hidden sm:inline">
+                        {post.category}
+                      </span>
+                    </div>
+                  </div>
 
-    //               {/* Media */}
-    //               {post.media && post.media.length > 0 && (
-    //                 <div className="mb-4">
-    //                   <img
-    //                     src={post.media[0]}
-    //                     alt="Post media"
-    //                     className="w-full h-64 object-cover rounded-lg"
-    //                   />
-    //                 </div>
-    //               )}
+                  {/* Content */}
+                  <div className="mb-3 sm:mb-4">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1 sm:mb-2 line-clamp-2">{post.title}</h3>
+                    <p className="text-gray-700 text-sm sm:text-base line-clamp-3">{post.description}</p>
+                  </div>
 
-    //               {/* Actions */}
-    //               <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-    //                 <div className="flex items-center space-x-6">
-    //                   <button className="flex items-center space-x-2 text-gray-500 hover:text-red-500 transition-colors">
-    //                     <Heart className="w-5 h-5" />
-    //                     <span className="text-sm">{post.likes}</span>
-    //                   </button>
-    //                   <button className="flex items-center space-x-2 text-gray-500 hover:text-blue-500 transition-colors">
-    //                     <MessageCircle className="w-5 h-5" />
-    //                     <span className="text-sm">{post.comments}</span>
-    //                   </button>
-    //                   <button className="flex items-center space-x-2 text-gray-500 hover:text-green-500 transition-colors">
-    //                     <ArrowUp className="w-5 h-5" />
-    //                     <span className="text-sm">{post.upvotes}</span>
-    //                   </button>
-    //                 </div>
-    //                 <button className="flex items-center space-x-2 text-gray-500 hover:text-blue-500 transition-colors">
-    //                   <Share2 className="w-5 h-5" />
-    //                   <span className="text-sm">Share</span>
-    //                 </button>
-    //               </div>
-    //             </div>
-    //           </div>
-    //         );
-    //       })}
-    //     </div>
+                  {/* Media */}
+                  {post.media && post.media.length > 0 && (
+                    <div className="mb-3 sm:mb-4">
+                      <img
+                        src={post.media[0]}
+                        alt="Post media"
+                        className="w-full h-40 sm:h-48 md:h-56 lg:h-64 object-cover rounded-lg"
+                      />
+                    </div>
+                  )}
 
-    //     {/* Load More */}
-    //     <div className="text-center mt-8">
-    //       <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-    //         Load More Posts
-    //       </button>
-    //     </div>
-    //   </div>
-    // </div>
-    <div>comming soon ...</div>
+                  {/* Category for mobile */}
+                  <div className="sm:hidden mb-3">
+                    <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs font-medium">
+                      {post.category}
+                    </span>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-gray-100">
+                    <div className="flex items-center space-x-4 sm:space-x-6">
+                      <button className="flex items-center space-x-1 sm:space-x-2 text-gray-500 hover:text-red-500 transition-colors">
+                        <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <span className="text-xs sm:text-sm">{post.likes}</span>
+                      </button>
+                      <button className="flex items-center space-x-1 sm:space-x-2 text-gray-500 hover:text-blue-500 transition-colors">
+                        <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <span className="text-xs sm:text-sm">{post.comments}</span>
+                      </button>
+                      <button className="flex items-center space-x-1 sm:space-x-2 text-gray-500 hover:text-green-500 transition-colors">
+                        <ArrowUp className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <span className="text-xs sm:text-sm">{post.upvotes}</span>
+                      </button>
+                    </div>
+                    <button className="flex items-center space-x-1 sm:space-x-2 text-gray-500 hover:text-blue-500 transition-colors">
+                      <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <span className="text-xs sm:text-sm hidden xs:inline">Share</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Load More */}
+        <div className="text-center mt-6 sm:mt-8">
+          <button className="bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base">
+            Load More Posts
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 
