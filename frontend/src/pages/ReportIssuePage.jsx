@@ -81,7 +81,7 @@ const ReportIssuePage = () => {
             <div className="flex space-x-4 justify-center">
               <button 
                 onClick={() => setSubmitted(false)}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition-colors"
               >
                 Report Another Issue
               </button>
@@ -96,7 +96,7 @@ const ReportIssuePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen py-12 bg-gray-900">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow-md">
           <div className="px-8 py-6 border-b border-gray-200">
@@ -118,7 +118,7 @@ const ReportIssuePage = () => {
                     value={formData.title}
                     onChange={handleInputChange}
                     placeholder="Brief description of the issue"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                     required
                   />
                 </div>
@@ -131,7 +131,7 @@ const ReportIssuePage = () => {
                     name="category"
                     value={formData.category}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                     required
                   >
                     <option value="">Select a category</option>
@@ -153,7 +153,7 @@ const ReportIssuePage = () => {
                       value={formData.location}
                       onChange={handleInputChange}
                       placeholder="Street address or intersection"
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                       required
                     />
                   </div>
@@ -165,7 +165,7 @@ const ReportIssuePage = () => {
                   </label>
                   <select
                     name="authority"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   >
                     <option value="">Select relevant authority</option>
                     {localAuthorities.map(authority => (
@@ -174,35 +174,7 @@ const ReportIssuePage = () => {
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Privacy Setting
-                  </label>
-                  <div className="space-y-2">
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        name="privacy"
-                        value="public"
-                        checked={formData.privacy === 'public'}
-                        onChange={handleInputChange}
-                        className="mr-2"
-                      />
-                      <span className="text-sm text-gray-700">Public - Visible to everyone</span>
-                    </label>
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        name="privacy"
-                        value="private"
-                        checked={formData.privacy === 'private'}
-                        onChange={handleInputChange}
-                        className="mr-2"
-                      />
-                      <span className="text-sm text-gray-700">Private - Only visible to authorities</span>
-                    </label>
-                  </div>
-                </div>
+              
               </div>
 
               {/* Right Column */}
@@ -217,7 +189,7 @@ const ReportIssuePage = () => {
                     onChange={handleInputChange}
                     rows={6}
                     placeholder="Provide detailed description of the issue, when it occurred, and any relevant information"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                     required
                   />
                 </div>
@@ -260,12 +232,12 @@ const ReportIssuePage = () => {
                   )}
                 </div>
 
-                <div className="bg-blue-50 rounded-lg p-4">
+                <div className="bg-orange-50 rounded-lg p-4">
                   <div className="flex items-start">
-                    <Shield className="w-5 h-5 text-blue-600 mr-2 mt-0.5" />
+                    <Shield className="w-5 h-5 text-orange-600 mr-2 mt-0.5" />
                     <div>
-                      <h3 className="font-medium text-blue-900">Privacy & Safety</h3>
-                      <p className="text-sm text-blue-700 mt-1">
+                      <h3 className="font-medium text-orange-900">Privacy & Safety</h3>
+                      <p className="text-sm text-orange-700 mt-1">
                         Your personal information is protected. Only your username will be visible with public reports.
                       </p>
                     </div>
@@ -284,7 +256,7 @@ const ReportIssuePage = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 transition-colors flex items-center space-x-2"
+                className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-orange-400 transition-colors flex items-center space-x-2"
               >
                 {isSubmitting ? (
                   <>
