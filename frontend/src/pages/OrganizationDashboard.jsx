@@ -118,237 +118,241 @@ const OrganizationDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <div className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col sm:flex-row sm:justify-between sm:items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Organization Dashboard
-            </h1>
-            <p className="text-sm text-gray-600">
-              Manage reports & track your organization’s impact
-            </p>
-          </div>
-          {/* Tabs */}
-          <div className="flex space-x-2 sm:space-x-4 mt-4 sm:mt-0">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition ${
-                    activeTab === tab.id
-                      ? "bg-blue-100 text-blue-600"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  <Icon className="w-4 h-4 mr-1" />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+   <div className="min-h-screen bg-gray-900">
+  {/* Header */}
+  <div className="bg-gray-800 shadow-sm sticky top-0 z-10">
+    <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col sm:flex-row sm:justify-between sm:items-center">
+      <div>
+        <h1 className="text-2xl font-bold text-white">
+          Organization Dashboard
+        </h1>
+        <p className="text-sm text-gray-400">
+          Manage reports & track your organization’s impact
+        </p>
       </div>
+      {/* Tabs */}
+      <div className="flex space-x-2 sm:space-x-4 mt-4 sm:mt-0">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition ${
+                activeTab === tab.id
+                  ? "bg-orange-500 text-black"
+                  : "text-gray-400 hover:text-gray-300"
+              }`}
+            >
+              <Icon className="w-4 h-4 mr-1" />
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        {/* Overview */}
-        {activeTab === "overview" && (
-          <div className="space-y-6">
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {stats.map((stat, index) => {
-                const Icon = stat.icon;
-                return (
-                  <div
-                    key={index}
-                    className="bg-white rounded-xl shadow-sm p-5 flex items-center justify-between hover:shadow-md transition"
-                  >
-                    <div>
-                      <p className="text-sm text-gray-600">{stat.label}</p>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {stat.value}
-                      </p>
-                      <p className="text-xs text-green-600">{stat.change}</p>
-                    </div>
-                    <div className={`p-3 rounded-full ${stat.color}`}>
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Bar Chart */}
-              <div className="bg-white rounded-xl shadow-sm p-5">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                  Monthly Report Trends
-                </h3>
-                <div className="h-72">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={monthlyData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="resolved" fill="#10B981" />
-                      <Bar dataKey="pending" fill="#F59E0B" />
-                    </BarChart>
-                  </ResponsiveContainer>
+  {/* Main Content */}
+  <div className="max-w-7xl mx-auto px-4 py-6">
+    {/* Overview */}
+    {activeTab === "overview" && (
+      <div className="space-y-6">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {stats.map((stat, index) => {
+            const Icon = stat.icon;
+            return (
+              <div
+                key={index}
+                className="bg-gray-800 rounded-xl shadow-sm p-5 flex items-center justify-between hover:shadow-md transition"
+              >
+                <div>
+                  <p className="text-sm text-gray-400">{stat.label}</p>
+                  <p className="text-2xl font-bold text-white">
+                    {stat.value}
+                  </p>
+                  <p className="text-xs text-green-400">{stat.change}</p>
+                </div>
+                <div className={`p-3 rounded-full ${stat.color}`}>
+                  <Icon className="w-6 h-6 text-white" />
                 </div>
               </div>
+            );
+          })}
+        </div>
 
-              {/* Pie Chart */}
-              <div className="bg-white rounded-xl shadow-sm p-5">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                  Reports by Category
-                </h3>
-                <div className="h-72">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={categoryData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={50}
-                        outerRadius={90}
-                        dataKey="value"
-                      >
-                        {categoryData.map((entry, index) => (
-                          <Cell key={index} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
-                  {categoryData.map((entry, index) => (
-                    <div key={index} className="flex items-center">
-                      <div
-                        className="w-3 h-3 rounded-full mr-2"
-                        style={{ backgroundColor: entry.color }}
-                      />
-                      <span>{entry.name} - {entry.value}%</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Bar Chart */}
+          <div className="bg-gray-800 rounded-xl shadow-sm p-5">
+            <h3 className="text-lg font-semibold text-white mb-3">
+              Monthly Report Trends
+            </h3>
+            <div className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={monthlyData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#4B5563" />
+                  <XAxis dataKey="name" stroke="#9CA3AF" />
+                  <YAxis stroke="#9CA3AF" />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1F2937', borderColor: '#374151', color: '#F9FAFB' }}
+                  />
+                  <Bar dataKey="resolved" fill="#10B981" />
+                  <Bar dataKey="pending" fill="#F59E0B" />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
-        )}
 
-        {/* Reports */}
-        {activeTab === "reports" && (
-          <div className="bg-white rounded-xl shadow-sm p-5">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Incoming Reports
+          {/* Pie Chart */}
+          <div className="bg-gray-800 rounded-xl shadow-sm p-5">
+            <h3 className="text-lg font-semibold text-white mb-3">
+              Reports by Category
             </h3>
-            <div className="divide-y">
-              {incomingReports.map((report) => (
-                <div
-                  key={report.id}
-                  className="py-4 flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4"
-                >
-                  <div className="flex-1">
-                    <h4 className="font-medium text-gray-900">
-                      {report.title}
-                    </h4>
-                    <p className="text-sm text-gray-600 mb-2">
-                      {report.description}
-                    </p>
-                    <div className="flex flex-wrap gap-3 text-xs text-gray-500">
-                      <span>📍 {report.location}</span>
-                      <span>🏷️ {report.category}</span>
-                      <span>👤 {report.reportedBy}</span>
-                      <span>⏰ {report.createdAt}</span>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <button className="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-700">
-                      Respond
-                    </button>
-                    <button className="bg-green-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-700">
-                      Mark Resolved
-                    </button>
-                  </div>
+            <div className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={categoryData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={90}
+                    dataKey="value"
+                  >
+                    {categoryData.map((entry, index) => (
+                      <Cell key={index} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1F2937', borderColor: '#374151', color: '#F9FAFB' }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+              {categoryData.map((entry, index) => (
+                <div key={index} className="flex items-center">
+                  <div
+                    className="w-3 h-3 rounded-full mr-2"
+                    style={{ backgroundColor: entry.color }}
+                  />
+                  <span className="text-gray-300">{entry.name} - {entry.value}%</span>
                 </div>
               ))}
             </div>
           </div>
-        )}
-
-        {/* Analytics */}
-        {activeTab === "analytics" && (
-          <div className="bg-white rounded-xl shadow-sm p-5">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Detailed Analytics
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-blue-50 rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">87%</div>
-                <div className="text-sm text-gray-600">Resolution Rate</div>
-              </div>
-              <div className="text-center p-4 bg-green-50 rounded-lg">
-                <div className="text-2xl font-bold text-green-600">2.3 days</div>
-                <div className="text-sm text-gray-600">Avg Response Time</div>
-              </div>
-              <div className="text-center p-4 bg-purple-50 rounded-lg">
-                <div className="text-2xl font-bold text-purple-600">4.8/5</div>
-                <div className="text-sm text-gray-600">Community Rating</div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Settings */}
-        {activeTab === "settings" && (
-          <div className="bg-white rounded-xl shadow-sm p-5 space-y-5">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Organization Settings
-            </h3>
-            <div>
-              <label className="text-sm font-medium text-gray-700">
-                Organization Name
-              </label>
-              <input
-                type="text"
-                defaultValue="City Public Works Department"
-                className="mt-1 w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-700">
-                Contact Email
-              </label>
-              <input
-                type="email"
-                defaultValue="contact@publicworks.city.gov"
-                className="mt-1 w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-700">
-                Response Time Goal (hours)
-              </label>
-              <input
-                type="number"
-                defaultValue="24"
-                className="mt-1 w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
-              Save Settings
-            </button>
-          </div>
-        )}
+        </div>
       </div>
-    </div>
+    )}
+
+    {/* Reports */}
+    {activeTab === "reports" && (
+      <div className="bg-gray-800 rounded-xl shadow-sm p-5">
+        <h3 className="text-lg font-semibold text-white mb-4">
+          Incoming Reports
+        </h3>
+        <div className="divide-y divide-gray-700">
+          {incomingReports.map((report) => (
+            <div
+              key={report.id}
+              className="py-4 flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4"
+            >
+              <div className="flex-1">
+                <h4 className="font-medium text-white">
+                  {report.title}
+                </h4>
+                <p className="text-sm text-gray-400 mb-2">
+                  {report.description}
+                </p>
+                <div className="flex flex-wrap gap-3 text-xs text-gray-500">
+                  <span>📍 {report.location}</span>
+                  <span>🏷️ {report.category}</span>
+                  <span>👤 {report.reportedBy}</span>
+                  <span>⏰ {report.createdAt}</span>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button className="bg-orange-500 text-black px-3 py-2 rounded-lg text-sm hover:bg-orange-600">
+                  Respond
+                </button>
+                <button className="bg-green-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-700">
+                  Mark Resolved
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {/* Analytics */}
+    {activeTab === "analytics" && (
+      <div className="bg-gray-800 rounded-xl shadow-sm p-5">
+        <h3 className="text-lg font-semibold text-white mb-4">
+          Detailed Analytics
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="text-center p-4 bg-gray-700 rounded-lg">
+            <div className="text-2xl font-bold text-green-400">87%</div>
+            <div className="text-sm text-gray-400">Resolution Rate</div>
+          </div>
+          <div className="text-center p-4 bg-gray-700 rounded-lg">
+            <div className="text-2xl font-bold text-green-400">2.3 days</div>
+            <div className="text-sm text-gray-400">Avg Response Time</div>
+          </div>
+          <div className="text-center p-4 bg-gray-700 rounded-lg">
+            <div className="text-2xl font-bold text-purple-400">4.8/5</div>
+            <div className="text-sm text-gray-400">Community Rating</div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Settings */}
+    {activeTab === "settings" && (
+      <div className="bg-gray-800 rounded-xl shadow-sm p-5 space-y-5">
+        <h3 className="text-lg font-semibold text-white">
+          Organization Settings
+        </h3>
+        <div>
+          <label className="text-sm font-medium text-gray-300">
+            Organization Name
+          </label>
+          <input
+            type="text"
+            defaultValue="City Public Works Department"
+            className="mt-1 w-full px-3 py-2 border border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 bg-gray-700 text-white"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium text-gray-300">
+            Contact Email
+          </label>
+          <input
+            type="email"
+            defaultValue="contact@publicworks.city.gov"
+            className="mt-1 w-full px-3 py-2 border border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 bg-gray-700 text-white"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium text-gray-300">
+            Response Time Goal (hours)
+          </label>
+          <input
+            type="number"
+            defaultValue="24"
+            className="mt-1 w-full px-3 py-2 border border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 bg-gray-700 text-white"
+          />
+        </div>
+        <button className="bg-orange-500 text-black px-4 py-2 rounded-lg text-sm hover:bg-orange-600">
+          Save Settings
+        </button>
+      </div>
+    )}
+  </div>
+</div>
   );
 };
 
