@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// FILE: frontend/src/pages/CommunityFeedPage.jsx
+import React, { useState, useEffect, useContext } from "react";
 import {
   Heart,
   MessageCircle,
@@ -12,107 +13,89 @@ import {
   Badge,
   Menu,
   X,
+  Send,
+  ThumbsUp,
 } from "lucide-react";
+import axios from 'axios';
+import { UserDataContext } from '../context/UserContext';
 
 const CommunityFeedPage = () => {
   const [filter, setFilter] = useState("all");
   const [sortBy, setSortBy] = useState("latest");
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [commentText, setCommentText] = useState({});
+  const { token, user } = useContext(UserDataContext);
 
-  const posts = [
-    {
-      id: 1,
-      type: "issue",
-      title: "Broken Street Light on Oak Avenue",
-      description:
-        "The street light has been out for over a week, making it dangerous for pedestrians at night.",
-      author: {
-        name: "Sarah Johnson",
-        avatar:
-          "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150",
-        verified: false,
-      },
-      location: "Oak Avenue, Downtown",
-      category: "Street Lighting",
-      status: "pending",
-      createdAt: "2 hours ago",
-      media: [
-        "https://images.pexels.com/photos/301920/pexels-photo-301920.jpeg?auto=compress&cs=tinysrgb&w=800",
-      ],
-      likes: 12,
-      comments: 3,
-      upvotes: 8,
-    },
-    {
-      id: 2,
-      type: "update",
-      title: "Pothole on Main Street - RESOLVED",
-      description:
-        "Thank you everyone for your support! The pothole has been fixed by the city maintenance crew.",
-      author: {
-        name: "City Public Works",
-        avatar:
-          "https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&w=150",
-        verified: true,
-      },
-      location: "Main Street, Downtown",
-      category: "Roads & Transportation",
-      status: "resolved",
-      createdAt: "4 hours ago",
-      media: [
-        "https://images.pexels.com/photos/416978/pexels-photo-416978.jpeg?auto=compress&cs=tinysrgb&w=800",
-      ],
-      likes: 34,
-      comments: 12,
-      upvotes: 24,
-    },
-    {
-      id: 3,
-      type: "issue",
-      title: "Graffiti on Community Center Wall",
-      description:
-        "Someone has vandalized the community center wall with graffiti. It needs to be cleaned up.",
-      author: {
-        name: "Michael Chen",
-        avatar:
-          "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=150",
-        verified: false,
-      },
-      location: "Community Center, East Side",
-      category: "Public Safety",
-      status: "in_progress",
-      createdAt: "1 day ago",
-      media: [
-        "https://images.pexels.com/photos/1105019/pexels-photo-1105019.jpeg?auto=compress&cs=tinysrgb&w=800",
-      ],
-      likes: 8,
-      comments: 5,
-      upvotes: 15,
-    },
-    {
-      id: 4,
-      type: "community",
-      title: "Community Garden Cleanup This Saturday",
-      description:
-        "Join us for a community garden cleanup event! We need volunteers to help maintain our shared green space.",
-      author: {
-        name: "Green Community Initiative",
-        avatar:
-          "https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&w=150",
-        verified: true,
-      },
-      location: "Community Garden, West Side",
-      category: "Environmental",
-      status: "active",
-      createdAt: "2 days ago",
-      media: [
-        "https://images.pexels.com/photos/1105019/pexels-photo-1105019.jpeg?auto=compress&cs=tinysrgb&w=800",
-      ],
-      likes: 45,
-      comments: 18,
-      upvotes: 32,
-    },
-  ];
+  useEffect(() => {
+    fetchPosts();
+  }, [filter, sortBy]);
+
+  const fetchPosts = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/posts`, {
+        params: {
+          status: filter === 'all' ? '' : filter,
+          sort: sortBy
+        },
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setPosts(response.data.posts);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLike = async (postId) => {
+    try {
+      await axios.post(`${import.meta.env.VITE_BASE_URL}/posts/${postId}/like`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      fetchPosts(); // Refresh posts
+    } catch (error) {
+      console.error('Error liking post:', error);
+    }
+  };
+
+  const handleUpvote = async (postId) => {
+    try {
+      await axios.post(`${import.meta.env.VITE_BASE_URL}/posts/${postId}/upvote`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      fetchPosts(); // Refresh posts
+    } catch (error) {
+      console.error('Error upvoting post:', error);
+    }
+  };
+
+  const handleAddComment = async (postId) => {
+    if (!commentText[postId]?.trim()) return;
+
+    try {
+      await axios.post(`${import.meta.env.VITE_BASE_URL}/posts/${postId}/comments`, {
+        content: commentText[postId]
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      setCommentText(prev => ({ ...prev, [postId]: '' }));
+      fetchPosts(); // Refresh posts
+    } catch (error) {
+      console.error('Error adding comment:', error);
+    }
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -122,8 +105,8 @@ const CommunityFeedPage = () => {
         return "bg-yellow-100 text-yellow-800";
       case "pending":
         return "bg-red-100 text-red-800";
-      case "active":
-        return "bg-blue-100 text-blue-800";
+      case "closed":
+        return "bg-gray-100 text-gray-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -137,20 +120,31 @@ const CommunityFeedPage = () => {
         return Clock;
       case "pending":
         return AlertCircle;
-      case "active":
-        return CheckCircle;
+      case "closed":
+        return AlertCircle;
       default:
         return AlertCircle;
     }
   };
 
-  const filteredPosts = posts.filter((post) => {
-    if (filter === "all") return true;
-    if (filter === "resolved") return post.status === "resolved";
-    if (filter === "pending") return post.status === "pending";
-    if (filter === "in_progress") return post.status === "in_progress";
-    return true;
-  });
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return 'Just now';
+    if (diffInHours < 24) return `${diffInHours}h ago`;
+    if (diffInHours < 168) return `${Math.floor(diffInHours / 24)}d ago`;
+    return date.toLocaleDateString();
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -237,26 +231,29 @@ const CommunityFeedPage = () => {
 
         {/* Posts */}
         <div className="space-y-4 sm:space-y-6">
-          {filteredPosts.map((post) => {
+          {posts.map((post) => {
             const StatusIcon = getStatusIcon(post.status);
+            const isLiked = post.likes.includes(user?._id);
+            const isUpvoted = post.upvotes.includes(user?._id);
+
             return (
               <div
-                key={post.id}
+                key={post._id}
                 className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
               >
                 <div className="p-4 sm:p-6">
                   {/* Header */}
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-3 sm:mb-4 space-y-3 sm:space-y-0">
                     <div className="flex items-start space-x-3">
-                      <img
-                        src={post.author.avatar}
-                        alt={post.author.name}
-                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0"
-                      />
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-black font-semibold text-sm">
+                          {post.author.firstName?.[0]}{post.author.lastName?.[0]}
+                        </span>
+                      </div>
                       <div className="min-w-0">
                         <div className="flex items-center space-x-2">
                           <span className="font-medium text-white text-sm sm:text-base truncate">
-                            {post.author.name}
+                            {post.author.firstName} {post.author.lastName}
                           </span>
                           {post.author.verified && (
                             <Badge className="w-3 h-3 sm:w-4 sm:h-4 text-orange-500 flex-shrink-0" />
@@ -266,7 +263,7 @@ const CommunityFeedPage = () => {
                           <MapPin className="w-3 h-3 flex-shrink-0" />
                           <span className="truncate">{post.location}</span>
                           <span className="hidden sm:inline">•</span>
-                          <span>{post.createdAt}</span>
+                          <span>{formatDate(post.createdAt)}</span>
                         </div>
                       </div>
                     </div>
@@ -298,10 +295,10 @@ const CommunityFeedPage = () => {
                   </div>
 
                   {/* Media */}
-                  {post.media && post.media.length > 0 && (
+                  {post.images && post.images.length > 0 && (
                     <div className="mb-3 sm:mb-4">
                       <img
-                        src={post.media[0]}
+                        src={post.images[0].url}
                         alt="Post media"
                         className="w-full h-40 sm:h-48 md:h-56 lg:h-64 object-cover rounded-lg"
                       />
@@ -318,20 +315,30 @@ const CommunityFeedPage = () => {
                   {/* Actions */}
                   <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-gray-700">
                     <div className="flex items-center space-x-4 sm:space-x-6">
-                      <button className="flex items-center space-x-1 sm:space-x-2 text-gray-400 hover:text-red-400 transition-colors">
-                        <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
-                        <span className="text-xs sm:text-sm">{post.likes}</span>
+                      <button 
+                        onClick={() => handleLike(post._id)}
+                        className={`flex items-center space-x-1 sm:space-x-2 transition-colors ${
+                          isLiked ? 'text-red-400' : 'text-gray-400 hover:text-red-400'
+                        }`}
+                      >
+                        <Heart className={`w-4 h-4 sm:w-5 sm:h-5 ${isLiked ? 'fill-current' : ''}`} />
+                        <span className="text-xs sm:text-sm">{post.likes.length}</span>
                       </button>
                       <button className="flex items-center space-x-1 sm:space-x-2 text-gray-400 hover:text-orange-500 transition-colors">
                         <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                         <span className="text-xs sm:text-sm">
-                          {post.comments}
+                          {post.comments.length}
                         </span>
                       </button>
-                      <button className="flex items-center space-x-1 sm:space-x-2 text-gray-400 hover:text-green-400 transition-colors">
-                        <ArrowUp className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <button 
+                        onClick={() => handleUpvote(post._id)}
+                        className={`flex items-center space-x-1 sm:space-x-2 transition-colors ${
+                          isUpvoted ? 'text-green-400' : 'text-gray-400 hover:text-green-400'
+                        }`}
+                      >
+                        <ArrowUp className={`w-4 h-4 sm:w-5 sm:h-5 ${isUpvoted ? 'fill-current' : ''}`} />
                         <span className="text-xs sm:text-sm">
-                          {post.upvotes}
+                          {post.upvotes.length}
                         </span>
                       </button>
                     </div>
@@ -342,6 +349,78 @@ const CommunityFeedPage = () => {
                       </span>
                     </button>
                   </div>
+
+                  {/* Comments Section */}
+                  <div className="mt-4 pt-4 border-t border-gray-700">
+                    {/* Add Comment */}
+                    <div className="flex space-x-3 mb-4">
+                      <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-white text-sm font-semibold">
+                          {user?.firstName?.[0]}
+                        </span>
+                      </div>
+                      <div className="flex-1">
+                        <input
+                          type="text"
+                          placeholder="Add a comment..."
+                          value={commentText[post._id] || ''}
+                          onChange={(e) => setCommentText(prev => ({
+                            ...prev,
+                            [post._id]: e.target.value
+                          }))}
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                              handleAddComment(post._id);
+                            }
+                          }}
+                          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        />
+                      </div>
+                      <button
+                        onClick={() => handleAddComment(post._id)}
+                        className="bg-orange-500 text-black px-3 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+                      >
+                        <Send className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {/* Comments List */}
+                    {post.comments.length > 0 && (
+                      <div className="space-y-3">
+                        {post.comments.map((comment) => (
+                          <div key={comment._id} className="flex space-x-3">
+                            <div className="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
+                              <span className="text-white text-xs font-semibold">
+                                {comment.user.firstName?.[0]}
+                              </span>
+                            </div>
+                            <div className="flex-1">
+                              <div className="bg-gray-700 rounded-lg p-3">
+                                <div className="flex items-center space-x-2 mb-1">
+                                  <span className="text-sm font-medium text-white">
+                                    {comment.user.firstName} {comment.user.lastName}
+                                  </span>
+                                  <span className="text-xs text-gray-400">
+                                    {formatDate(comment.createdAt)}
+                                  </span>
+                                </div>
+                                <p className="text-sm text-gray-300">{comment.content}</p>
+                              </div>
+                              <div className="flex items-center space-x-4 mt-1">
+                                <button className="flex items-center space-x-1 text-xs text-gray-400 hover:text-gray-300">
+                                  <ThumbsUp className="w-3 h-3" />
+                                  <span>{comment.likes.length}</span>
+                                </button>
+                                <button className="text-xs text-gray-400 hover:text-gray-300">
+                                  Reply
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             );
@@ -349,11 +428,23 @@ const CommunityFeedPage = () => {
         </div>
 
         {/* Load More */}
-        <div className="text-center mt-6 sm:mt-8">
-          <button className="bg-orange-500 text-black px-4 sm:px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors text-sm sm:text-base">
-            Load More Posts
-          </button>
-        </div>
+        {posts.length > 0 && (
+          <div className="text-center mt-6 sm:mt-8">
+            <button 
+              onClick={fetchPosts}
+              className="bg-orange-500 text-black px-4 sm:px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors text-sm sm:text-base"
+            >
+              Load More Posts
+            </button>
+          </div>
+        )}
+
+        {posts.length === 0 && !loading && (
+          <div className="text-center py-12">
+            <div className="text-gray-400 text-lg">No posts found</div>
+            <p className="text-gray-500 mt-2">Be the first to report an issue in your community!</p>
+          </div>
+        )}
       </div>
     </div>
   );

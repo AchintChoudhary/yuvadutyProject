@@ -49,7 +49,7 @@ mongoose
 
 // ✅ Routes
 app.use("/users", require("./routes/user.routes"));
-
+app.use("/posts", require("./routes/post.routes"));
 // Test route
 app.get("/", (req, res) => {
   res.send("CivicConnect API Server");
