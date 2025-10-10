@@ -1,5 +1,5 @@
 // FILE: frontend/src/pages/CommunityFeedPage.jsx
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   Heart,
   MessageCircle,
@@ -15,6 +15,8 @@ import {
   X,
   Send,
   ThumbsUp,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import axios from 'axios';
 import { UserDataContext } from '../context/UserContext';
@@ -26,7 +28,10 @@ const CommunityFeedPage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [commentText, setCommentText] = useState({});
+  const [expandedComments, setExpandedComments] = useState({});
+  const [visibleCommentCount, setVisibleCommentCount] = useState({}); // Track visible comments per post
   const { token, user } = useContext(UserDataContext);
+  const commentSectionRefs = useRef({});
 
   useEffect(() => {
     fetchPosts();
@@ -45,6 +50,13 @@ const CommunityFeedPage = () => {
         }
       });
       setPosts(response.data.posts);
+      
+      // Initialize visible comment count for each post
+      const initialCounts = {};
+      response.data.posts.forEach(post => {
+        initialCounts[post._id] = Math.min(3, post.comments.length);
+      });
+      setVisibleCommentCount(initialCounts);
     } catch (error) {
       console.error('Error fetching posts:', error);
     } finally {
@@ -59,7 +71,7 @@ const CommunityFeedPage = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      fetchPosts(); // Refresh posts
+      fetchPosts();
     } catch (error) {
       console.error('Error liking post:', error);
     }
@@ -72,7 +84,7 @@ const CommunityFeedPage = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      fetchPosts(); // Refresh posts
+      fetchPosts();
     } catch (error) {
       console.error('Error upvoting post:', error);
     }
@@ -91,10 +103,30 @@ const CommunityFeedPage = () => {
       });
       
       setCommentText(prev => ({ ...prev, [postId]: '' }));
-      fetchPosts(); // Refresh posts
+      fetchPosts();
     } catch (error) {
       console.error('Error adding comment:', error);
     }
+  };
+
+  const toggleComments = (postId) => {
+    setExpandedComments(prev => ({
+      ...prev,
+      [postId]: !prev[postId]
+    }));
+  };
+
+  const loadMoreComments = (postId) => {
+    const post = posts.find(p => p._id === postId);
+    if (!post) return;
+
+    const currentVisible = visibleCommentCount[postId] || 3;
+    const nextVisible = Math.min(currentVisible + 5, post.comments.length);
+    
+    setVisibleCommentCount(prev => ({
+      ...prev,
+      [postId]: nextVisible
+    }));
   };
 
   const getStatusColor = (status) => {
@@ -235,6 +267,10 @@ const CommunityFeedPage = () => {
             const StatusIcon = getStatusIcon(post.status);
             const isLiked = post.likes.includes(user?._id);
             const isUpvoted = post.upvotes.includes(user?._id);
+            const isCommentsExpanded = expandedComments[post._id];
+            const visibleCommentsCount = visibleCommentCount[post._id] || 3;
+            const displayedComments = post.comments.slice(0, visibleCommentsCount);
+            const hasMoreComments = visibleCommentsCount < post.comments.length;
 
             return (
               <div
@@ -324,7 +360,12 @@ const CommunityFeedPage = () => {
                         <Heart className={`w-4 h-4 sm:w-5 sm:h-5 ${isLiked ? 'fill-current' : ''}`} />
                         <span className="text-xs sm:text-sm">{post.likes.length}</span>
                       </button>
-                      <button className="flex items-center space-x-1 sm:space-x-2 text-gray-400 hover:text-orange-500 transition-colors">
+                      <button 
+                        onClick={() => toggleComments(post._id)}
+                        className={`flex items-center space-x-1 sm:space-x-2 transition-colors ${
+                          isCommentsExpanded ? 'text-orange-500' : 'text-gray-400 hover:text-orange-500'
+                        }`}
+                      >
                         <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                         <span className="text-xs sm:text-sm">
                           {post.comments.length}
@@ -350,77 +391,102 @@ const CommunityFeedPage = () => {
                     </button>
                   </div>
 
-                  {/* Comments Section */}
-                  <div className="mt-4 pt-4 border-t border-gray-700">
-                    {/* Add Comment */}
-                    <div className="flex space-x-3 mb-4">
-                      <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span className="text-white text-sm font-semibold">
-                          {user?.firstName?.[0]}
-                        </span>
+                  {/* Comments Section - Collapsible with Instagram-like scrolling */}
+                  {isCommentsExpanded && (
+                    <div className="mt-4 pt-4 border-t border-gray-700">
+                      {/* Add Comment */}
+                      <div className="flex space-x-3 mb-4">
+                        <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-white text-sm font-semibold">
+                            {user?.firstName?.[0]}
+                          </span>
+                        </div>
+                        <div className="flex-1">
+                          <input
+                            type="text"
+                            placeholder="Add a comment..."
+                            value={commentText[post._id] || ''}
+                            onChange={(e) => setCommentText(prev => ({
+                              ...prev,
+                              [post._id]: e.target.value
+                            }))}
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                handleAddComment(post._id);
+                              }
+                            }}
+                            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          />
+                        </div>
+                        <button
+                          onClick={() => handleAddComment(post._id)}
+                          className="bg-orange-500 text-black px-3 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+                        >
+                          <Send className="w-4 h-4" />
+                        </button>
                       </div>
-                      <div className="flex-1">
-                        <input
-                          type="text"
-                          placeholder="Add a comment..."
-                          value={commentText[post._id] || ''}
-                          onChange={(e) => setCommentText(prev => ({
-                            ...prev,
-                            [post._id]: e.target.value
-                          }))}
-                          onKeyPress={(e) => {
-                            if (e.key === 'Enter') {
-                              handleAddComment(post._id);
-                            }
-                          }}
-                          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        />
-                      </div>
-                      <button
-                        onClick={() => handleAddComment(post._id)}
-                        className="bg-orange-500 text-black px-3 py-2 rounded-lg hover:bg-orange-600 transition-colors"
-                      >
-                        <Send className="w-4 h-4" />
-                      </button>
-                    </div>
 
-                    {/* Comments List */}
-                    {post.comments.length > 0 && (
-                      <div className="space-y-3">
-                        {post.comments.map((comment) => (
-                          <div key={comment._id} className="flex space-x-3">
-                            <div className="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
-                              <span className="text-white text-xs font-semibold">
-                                {comment.user.firstName?.[0]}
-                              </span>
-                            </div>
-                            <div className="flex-1">
-                              <div className="bg-gray-700 rounded-lg p-3">
-                                <div className="flex items-center space-x-2 mb-1">
-                                  <span className="text-sm font-medium text-white">
-                                    {comment.user.firstName} {comment.user.lastName}
-                                  </span>
-                                  <span className="text-xs text-gray-400">
-                                    {formatDate(comment.createdAt)}
+                      {/* Comments List with Scrollable Area */}
+                      {post.comments.length > 0 ? (
+                        <div className="space-y-3">
+                          {/* Scrollable comments container */}
+                          <div 
+                            ref={el => commentSectionRefs.current[post._id] = el}
+                            className="max-h-64 overflow-y-auto space-y-3 pr-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800"
+                          >
+                            {displayedComments.map((comment) => (
+                              <div key={comment._id} className="flex space-x-3">
+                                <div className="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                  <span className="text-white text-xs font-semibold">
+                                    {comment.user.firstName?.[0]}
                                   </span>
                                 </div>
-                                <p className="text-sm text-gray-300">{comment.content}</p>
+                                <div className="flex-1 min-w-0">
+                                  <div className="bg-gray-700 rounded-lg p-3">
+                                    <div className="flex items-center space-x-2 mb-1">
+                                      <span className="text-sm font-medium text-white truncate">
+                                        {comment.user.firstName} {comment.user.lastName}
+                                      </span>
+                                      <span className="text-xs text-gray-400 flex-shrink-0">
+                                        {formatDate(comment.createdAt)}
+                                      </span>
+                                    </div>
+                                    <p className="text-sm text-gray-300 break-words">{comment.content}</p>
+                                  </div>
+                                  <div className="flex items-center space-x-4 mt-1">
+                                    <button className="flex items-center space-x-1 text-xs text-gray-400 hover:text-gray-300">
+                                      <ThumbsUp className="w-3 h-3" />
+                                      <span>{comment.likes.length}</span>
+                                    </button>
+                                    <button className="text-xs text-gray-400 hover:text-gray-300">
+                                      Reply
+                                    </button>
+                                  </div>
+                                </div>
                               </div>
-                              <div className="flex items-center space-x-4 mt-1">
-                                <button className="flex items-center space-x-1 text-xs text-gray-400 hover:text-gray-300">
-                                  <ThumbsUp className="w-3 h-3" />
-                                  <span>{comment.likes.length}</span>
-                                </button>
-                                <button className="text-xs text-gray-400 hover:text-gray-300">
-                                  Reply
-                                </button>
-                              </div>
-                            </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+
+                          {/* Load More Comments Button */}
+                          {hasMoreComments && (
+                            <div className="flex justify-center pt-2">
+                              <button
+                                onClick={() => loadMoreComments(post._id)}
+                                className="flex items-center space-x-1 text-orange-500 hover:text-orange-400 text-sm font-medium"
+                              >
+                                <ChevronDown className="w-4 h-4" />
+                                <span>Load more comments ({post.comments.length - visibleCommentsCount} remaining)</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-center py-4">
+                          <p className="text-gray-400 text-sm">No comments yet. Be the first to comment!</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             );
