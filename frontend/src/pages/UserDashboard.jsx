@@ -78,12 +78,11 @@ const ProfilePage = ({ navigateTo }) => {
   const tabs = [
     { id: 'overview', label: 'Overview', icon: User },
     { id: 'reports', label: 'My Reports', icon: Edit3 },
-    { id: 'locations', label: 'Saved Locations', icon: MapPin },
-    { id: 'settings', label: 'Settings', icon: Settings }
+
   ];
 
   return (
- <div className="min-h-screen bg-gray-900">
+<div className="min-h-screen bg-gray-900">
   <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
     {/* Profile Header */}
     <div className="bg-gray-800 rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 mb-4 sm:mb-6 lg:mb-8">

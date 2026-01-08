@@ -114,7 +114,7 @@ const AboutPage = () => {
   <section className="bg-gradient-to-br from-gray-800 via-gray-900 to-black text-white py-20">
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <h1 className="text-4xl md:text-5xl font-bold mb-6">
-        About CivicConnect
+        About Yuvaduty
       </h1>
       <p className="text-xl md:text-2xl text-gray-300 mb-8">
         Empowering communities to create positive change through technology, 
@@ -173,7 +173,7 @@ const AboutPage = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {values.map((value, index) => {
+        {/* {values.map((value, index) => {
           const Icon = value.icon;
           return (
             <div key={index} className="bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
@@ -184,7 +184,7 @@ const AboutPage = () => {
               <p className="text-gray-400">{value.description}</p>
             </div>
           );
-        })}
+        })} */}
       </div>
     </div>
   </section>
@@ -200,13 +200,13 @@ const AboutPage = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-        {achievements.map((achievement, index) => (
+        {/* {achievements.map((achievement, index) => (
           <div key={index} className="text-center">
             <div className="text-4xl font-bold text-orange-500 mb-2">{achievement.number}</div>
             <div className="text-lg font-semibold text-white mb-2">{achievement.label}</div>
             <div className="text-gray-400">{achievement.description}</div>
           </div>
-        ))}
+        ))} */}
       </div>
     </div>
   </section>
@@ -222,7 +222,7 @@ const AboutPage = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {teamMembers.map((member, index) => (
+        {/* {teamMembers.map((member, index) => (
           <div key={index} className="bg-gray-800 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
             <img 
               src={member.image} 
@@ -235,7 +235,7 @@ const AboutPage = () => {
               <p className="text-gray-400 text-sm">{member.description}</p>
             </div>
           </div>
-        ))}
+        ))} */}
       </div>
     </div>
   </section>
